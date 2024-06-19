@@ -1,5 +1,2 @@
-build:
-  web: ./run.sh
-
 run:
-  web: sh -c "python libretranslate/app.py --host 0.0.0.0 --port \$PORT"
+  web: ./run.sh
