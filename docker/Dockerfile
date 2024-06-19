@@ -11,31 +11,28 @@ RUN apt-get update -qq \
 
 RUN python -m venv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
 
-COPY . .
+COPY . /app
 
 # Install dependencies with detailed logging and error checking
-RUN ./venv/bin/pip install Babel==2.12.1 && echo "Babel installed successfully" \
-  || { echo "Babel installation failed"; exit 1; }
+RUN /app/venv/bin/pip install -r /app/requirements.txt && echo "Dependencies installed successfully" \
+  || { echo "Dependencies installation failed"; exit 1; }
 
-RUN ./venv/bin/pip install torch==2.0.1 --extra-index-url https://download.pytorch.org/whl/cpu && echo "Torch installed successfully" \
+RUN /app/venv/bin/pip install torch==2.0.1 --extra-index-url https://download.pytorch.org/whl/cpu && echo "Torch installed successfully" \
   || { echo "Torch installation failed"; exit 1; }
 
-RUN ./venv/bin/pip install 'numpy<2' && echo "Numpy installed successfully" \
-  || { echo "Numpy installation failed"; exit 1; }
+# Run the install_models.py script
+RUN /app/venv/bin/python /app/scripts/install_models.py && echo "Models installed successfully" \
+  || { echo "Model installation failed"; exit 1; }
 
-
-RUN ./venv/bin/pip install /app && echo "Package installed successfully" \
+# Install the package from the app directory
+RUN /app/venv/bin/pip install /app && echo "Package installed successfully" \
   || { echo "Package installation failed"; exit 1; }
 
-# Compile translations separately
+  # Compile translations separately
 #RUN ./venv/bin/python scripts/compile_locales.py && echo "Locales compiled successfully" \
 #  || { echo "Locale compilation failed"; exit 1; }
-
-RUN ./venv/bin/python scripts/install_models.py && echo "models compiled successfully" \
-  || { echo "Locale compilation failed"; exit 1; }
-
 # Clean up pip cache
-RUN ./venv/bin/pip cache purge
+RUN /app/venv/bin/pip cache purge
 
 FROM python:3.11.9-slim-bullseye
 
@@ -56,13 +53,13 @@ COPY --from=builder --chown=1032:1032 /app/venv/bin/ltmanage /usr/bin/
 
 RUN if [ "$with_models" = "true" ]; then \
   if [ ! -z "$models" ]; then \
-    ./venv/bin/python scripts/install_models.py --load_only_lang_codes "$models"; \
+    /app/venv/bin/python /app/scripts/install_models.py --load_only_lang_codes "$models"; \
   else \
-    ./venv/bin/python scripts/install_models.py; \
+    /app/venv/bin/python /app/scripts/install_models.py; \
   fi \
 fi
 
 EXPOSE 5000
 
-ENTRYPOINT ["./venv/bin/libretranslate"]
+ENTRYPOINT ["/app/venv/bin/libretranslate"]
 CMD ["--host", "0.0.0.0", "--port", "${PORT}"]
