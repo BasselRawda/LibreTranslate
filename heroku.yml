@@ -1,2 +1,6 @@
+build:
+  docker:
+    web: Dockerfile
+
 run:
-  web: ./run.sh
+  web: sh -c "python libretranslate/app.py --host 0.0.0.0 --port \$PORT"
