@@ -13,8 +13,12 @@ RUN python -mvenv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
 
 COPY . .
 
+# Debugging step to list directory contents
+RUN ls -l /app/libretranslate/scripts
+
 # Install package from source code, compile translations
-RUN ./venv/bin/pip install Babel==2.12.1 && ./venv/bin/python libretranslate/scripts/compile_locales.py \
+RUN ./venv/bin/pip install Babel==2.12.1 \
+  && ./venv/bin/python /app/libretranslate/scripts/compile_locales.py \
   && ./venv/bin/pip install torch==2.0.1 --extra-index-url https://download.pytorch.org/whl/cpu \
   && ./venv/bin/pip install . \
   && ./venv/bin/pip cache purge
