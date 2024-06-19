@@ -23,6 +23,8 @@ RUN ./venv/bin/pip install torch==2.0.1 --extra-index-url https://download.pytor
 RUN ./venv/bin/pip install 'numpy<2' && echo "Numpy installed successfully" \
   || { echo "Numpy installation failed"; exit 1; }
 
+RUN ls -la
+
 RUN ./venv/bin/pip install . && echo "Package installed successfully" \
   || { echo "Package installation failed"; exit 1; }
 
