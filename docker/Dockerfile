@@ -14,7 +14,7 @@ RUN python -mvenv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
 COPY . /app
 
 # Debugging step to list directory contents
-RUN ls -l /app/scripts
+RUN ls -la
 
 # Install package from source code, compile translations
 RUN ./venv/bin/pip install Babel==2.12.1 \
