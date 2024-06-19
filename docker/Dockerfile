@@ -11,7 +11,7 @@ RUN apt-get update -qq \
 
 RUN python -mvenv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
 
-COPY . .
+COPY . /app
 
 # Debugging step to list directory contents
 RUN ls -l /app/libretranslate/scripts
