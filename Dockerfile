@@ -44,8 +44,3 @@ RUN if [ "$with_models" = "true" ]; then  \
 EXPOSE 5000
 ENTRYPOINT ["./venv/bin/libretranslate"]
 CMD ["--host", "0.0.0.0", "--port", "${PORT}"]
-
-COPY ./run.sh /app/run.sh
-
-# Start the application
-CMD ["/app/run.sh"]

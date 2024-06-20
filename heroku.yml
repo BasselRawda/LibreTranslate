@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 
 run:
-  web: libretranslate
+  web: docker run -d -p $PORT:5000 libretranslate
