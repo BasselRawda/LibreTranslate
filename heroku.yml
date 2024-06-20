@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 
 run:
-  web: /app/run.sh
+  web: sh /app/run.sh
