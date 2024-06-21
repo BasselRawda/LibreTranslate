@@ -41,11 +41,12 @@ RUN if [ "$with_models" = "true" ]; then  \
   fi \
   fi
 
-EXPOSE 5000
-ENTRYPOINT ["./venv/bin/libretranslate"]
-CMD ["--host", "0.0.0.0", "--port", "${PORT}"]
+  EXPOSE 5000
 
-COPY ./run.sh /app/run.sh
-
-# Start the application
-CMD ["/app/run.sh"]
+  COPY ./run.sh /app/run.sh
+  
+  ENTRYPOINT ["./venv/bin/libretranslate"]
+  CMD ["--host", "0.0.0.0", "--port", "${PORT}"]
+  
+  # If you need to run additional startup scripts
+  # CMD ["/app/run.sh"]
