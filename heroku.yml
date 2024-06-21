@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 
 run:
-  web: ./venv/bin/libretranslate --host 0.0.0.0 --port $PORT
+  web: /app/run.sh

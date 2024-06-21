@@ -9,7 +9,7 @@ RUN apt-get update -qq \
   && apt-get clean \
   && rm -rf /var/lib/apt
 
-RUN python -mvenv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
+RUN python -m venv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
 
 COPY . .
 
@@ -41,12 +41,7 @@ RUN if [ "$with_models" = "true" ]; then  \
   fi \
   fi
 
-  EXPOSE 5000
+EXPOSE 5000
 
-  COPY ./run.sh /app/run.sh
-  
-  ENTRYPOINT ["./venv/bin/libretranslate"]
-  CMD ["--host", "0.0.0.0", "--port", "${PORT}"]
-  
-  # If you need to run additional startup scripts
-  # CMD ["/app/run.sh"]
+# Set the ENTRYPOINT to ensure that the run.sh script is executed with the correct interpreter
+ENTRYPOINT ["/bin/bash", "/app/run.sh"]
