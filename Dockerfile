@@ -41,7 +41,5 @@ RUN if [ "$with_models" = "true" ]; then  \
   fi \
   fi
 
-EXPOSE 5000
-
 # Set the ENTRYPOINT to ensure that the run.sh script is executed with the correct interpreter
-ENTRYPOINT ["/bin/bash", "/app/run.sh"]
+# ENTRYPOINT ["/bin/bash", "/app/run.sh"]
