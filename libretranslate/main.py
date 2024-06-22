@@ -5,6 +5,7 @@ import logging
 from libretranslate.app import create_app
 from libretranslate.default_values import DEFAULT_ARGUMENTS as DEFARGS
 
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_args():
     parser = argparse.ArgumentParser(
