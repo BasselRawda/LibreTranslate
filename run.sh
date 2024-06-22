@@ -7,6 +7,7 @@ echo "PORT: ${PORT}"
 
 # Default port to 5000 if not set by Heroku
 PORT=${PORT:-5000}
+export LT_PORT=PORT
 
 # More debug information
 echo "Using port: ${PORT}"
