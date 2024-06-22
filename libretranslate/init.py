@@ -1,9 +1,13 @@
 
 from argostranslate import package, translate
 from packaging import version
-
+import sys
+import logging
+import time
 import libretranslate.language
 
+if not logging.getLogger().hasHandlers():
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def boot(load_only=None, update_models=False, install_models=False):
     try:
@@ -16,15 +20,20 @@ def boot(load_only=None, update_models=False, install_models=False):
 
 
 def check_and_install_models(force=False, load_only_lang_codes=None,update=False):
+    start_time = time.time()
+    logging.info("Starting to install...")
     if len(package.get_installed_packages()) < 2 or force or update:
         # Update package definitions from remote
         print("Updating language models")
         package.update_package_index()
+        logging.info(f"In package.get_installed_packages() {time.time() - start_time} seconds")
 
         # Load available packages from local package index
         available_packages = package.get_available_packages()
         installed_packages = package.get_installed_packages()
         print("Found %s models" % len(available_packages))
+        logging.info(f"Package count: {len(available_packages)}")
+        logging.info(f"In package.get_installed_packages() {time.time() - start_time} seconds")
         if load_only_lang_codes is not None:
             # load_only_lang_codes: List[str] (codes)
             # Ensure the user does not use any unavailable language code.
@@ -48,6 +57,9 @@ def check_and_install_models(force=False, load_only_lang_codes=None,update=False
 
         # Download and install all available packages
         for available_package in available_packages:
+            logging.info(f"In package.get_installed_packages() {time.time() - start_time} seconds")
+            logging.info(f"package {available_package} ")
+
             update = False
             if not force:
                 for pack in installed_packages:
