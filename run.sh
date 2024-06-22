@@ -10,6 +10,7 @@ PORT=${PORT:-5000}
 
 # More debug information
 echo "Using port: ${PORT}"
+echo "Using host: ${HOST}"
 
 # Start the LibreTranslate service and redirect output to a log file
 ./venv/bin/libretranslate --host 0.0.0.0 --port $PORT &> /app/libretranslate.log
