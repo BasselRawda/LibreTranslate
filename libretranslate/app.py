@@ -8,7 +8,7 @@ from datetime import datetime
 from functools import wraps
 from html import unescape
 from timeit import default_timer
-
+import logging
 import argostranslatefiles
 from argostranslatefiles import get_supported_formats
 from flask import Blueprint, Flask, Response, abort, jsonify, render_template, request, send_file, session, url_for
@@ -36,6 +36,9 @@ from libretranslate.locales import (
 
 from .api_keys import Database, RemoteDatabase
 from .suggestions import Database as SuggestionsDatabase
+
+if not logging.getLogger().hasHandlers():
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def get_version():
@@ -154,10 +157,12 @@ def filter_unique(seq, extra):
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 def create_app(args):
+    start_time = time.time()
+    logging.info("Starting to boot system...")
     from libretranslate.init import boot
-
+    logging.info(f"import init completed in {time.time() - start_time} seconds")
     boot(args.load_only, args.update_models, args.force_update_models)
-
+    logging.info(f"Boot completed in {time.time() - start_time} seconds")
     from libretranslate.language import load_languages
 
     swagger_url = args.url_prefix + "/docs"  # Swagger UI (w/o trailing '/')
@@ -166,7 +171,7 @@ def create_app(args):
     bp = Blueprint('Main app', __name__)
 
     storage.setup(args.shared_storage)
-
+    logging.info(f"storage completed in {time.time() - start_time} seconds")
     if not args.disable_files_translation:
         remove_translated_files.setup(get_upload_dir())
     languages = load_languages()
@@ -189,7 +194,7 @@ def create_app(args):
 
 
     language_target_fallback = languages[1] if len(languages) >= 2 else languages[0]
-
+    logging.info(f"language_target_fallback completed in {time.time() - start_time} seconds")
     if args.frontend_language_target == "locale":
       def resolve_language_locale():
           loc = get_locale()
@@ -248,9 +253,11 @@ def create_app(args):
     if not "gunicorn" in os.environ.get("SERVER_SOFTWARE", ""):
       # Gunicorn starts the scheduler in the master process
       scheduler.setup(args)
-
+    logging.info(f"before flood completed in {time.time() - start_time} seconds")
     flood.setup(args)
+    logging.info(f"after flood completed in {time.time() - start_time} seconds")
     secret.setup(args)
+    logging.info(f"after secret completed in {time.time() - start_time} seconds")
 
     measure_request = None
     gauge_request = None
