@@ -1,7 +1,7 @@
 import argparse
 import operator
 import sys
-
+import logging
 from libretranslate.app import create_app
 from libretranslate.default_values import DEFAULT_ARGUMENTS as DEFARGS
 
@@ -216,10 +216,14 @@ def get_args():
 
 
 def main():
+    logging.info("Starting application")
     args = get_args()
+    logging.debug(f"Arguments: {args}")
     app = create_app(args)
+    logging.info("Application created")
 
     if '--wsgi' in sys.argv:
+        logging.info("Running in WSGI mode")
         return app
     else:
         if args.debug and args.host == "*":
@@ -227,12 +231,13 @@ def main():
             args.host = "::"
 
         if args.debug:
+            logging.info(f"Running in debug mode on {args.host}:{args.port}")
             app.run(host=args.host, port=args.port)
         else:
             from waitress import serve
 
             url_scheme = "https" if args.ssl else "http"
-            print(f"Running on {url_scheme}://{args.host}:{args.port}{args.url_prefix}")
+            logging.info(f"Running on {url_scheme}://{args.host}:{args.port}{args.url_prefix}")
 
             serve(
                 app,
@@ -241,7 +246,6 @@ def main():
                 url_scheme=url_scheme,
                 threads=args.threads
             )
-
 
 if __name__ == "__main__":
     main()
