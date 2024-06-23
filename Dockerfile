@@ -10,7 +10,7 @@ RUN apt-get update -qq \
   && rm -rf /var/lib/apt
 
 RUN python -m venv venv && ./venv/bin/pip install --no-cache-dir --upgrade pip
-
+RUN ./venv/bin/pip install numpy==1.26.4
 COPY . .
 
 # Install package from source code, compile translations
